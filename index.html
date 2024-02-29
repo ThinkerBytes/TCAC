@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carbon Storage Calculator</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    /* Additional custom styles can be added here */
+    body {
+      background-color: #f3f8f2; /* lightest green */
+    }
+    .navbar-brand {
+      font-size: 24px;
+    }
+    .instruction-box {
+      background-color: #d9ecd0; /* light green */
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+    }
+    .result-box {
+      background-color: #c3e2b7; /* slightly darker green */
+      padding: 20px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+    .lifetime-box {
+      background-color: #a8d78f; /* darker green */
+      padding: 20px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+    .footer {
+      margin-top: 50px;
+      text-align: center;
+      color: #666;
+    }
+    .note-box {
+      background-color: #f8f9fa; /* light gray */
+      padding: 20px;
+      border-radius: 5px;
+      margin-top: 50px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand font-weight-bold" href="#">GreenMetrica</a>
+    </div>
+  </nav>
+
+  <div class="container mt-4">
+    <h1 class="mb-4">Tree Carbon Storage Calculator</h1>
+
+    <!-- Instructions Box -->
+    <div class="instruction-box">
+      <p><strong>Instruction for measuring Circumference:</strong> Use a tape measure to measure the distance all the way around the trunk of the tree at a height of 1.3 metres (approximately chest height) up from the ground.</p>
+    </div>
+
+    <form id="carbonForm">
+      <div class="form-group">
+        <label for="circumference">Enter Circumference of the Tree (in cm):</label>
+        <input type="number" class="form-control" id="circumference" placeholder="Enter circumference">
+      </div>
+      <button type="submit" class="btn btn-primary btn-block">Calculate</button>
+    </form>
+
+    <!-- Result Box -->
+    <div id="result" class="mt-4 d-none">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="result-box">
+            <h2>Carbon Stored in the Tree:</h2>
+            <p id="carbonStored"></p>
+            <p class="text-muted">This value represents the amount of carbon stored in the tree, which helps reduce the effects of climate change.</p>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="lifetime-box">
+            <h2>Lifetime CO2 Absorption:</h2>
+            <p id="co2Absorbed"></p>
+            <p class="text-muted">This value represents the total amount of carbon dioxide absorbed by the tree over its lifetime, contributing to environmental sustainability.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Explanation -->
+    <div class="row">
+      <div class="col-md-12">
+        <div class="alert alert-info" role="alert">
+          <h4 class="alert-heading">How does this calculation work?</h4>
+          <p>This calculator uses the circumference of the tree, measured at chest height, to estimate the amount of carbon stored in the tree. The circumference is converted to dry weight using a conversion table, and then the carbon stored is calculated as half of the dry weight. The amount of carbon dioxide absorbed by the tree over its lifetime is calculated by multiplying the carbon stored by 3.67.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Note Section -->
+    <div class="note-box">
+      <h4>Important Note:</h4>
+      <p>It’s important to note that the calculations provided are estimates. The growth rates for different tree species and the conversion of tree circumference to dry weight are averages and may not perfectly represent every individual tree. Also, the amount of carbon stored in a tree can vary depending on a number of factors, including the tree’s health, age, and the specific environment it’s growing in.</p>
+      <p>The number 3.67 represents the ratio of the molecular weight of carbon dioxide (CO2) to that of carbon (C).</p>
+      <p>Here’s how it works:</p>
+      <ul>
+        <li>The atomic weight of carbon (C) is approximately 12.</li>
+        <li>Carbon dioxide (CO2) is composed of one carbon atom and two oxygen atoms. The atomic weight of oxygen (O) is approximately 16. Therefore, the molecular weight of CO2 (one carbon atom + two oxygen atoms) is approximately 44 (12 for Carbon and 32 for Oxygen).</li>
+        <li>The ratio of the molecular weight of CO2 to that of C is 44/12, which equals approximately 3.67.</li>
+        <li>So, when you multiply the weight of carbon stored in a tree by 3.67, you get the weight of carbon dioxide that the tree has absorbed from the atmosphere over its lifetime. This is because when trees absorb CO2, they actually store the carbon (C) part and release the oxygen (O2) back into the atmosphere. Therefore, to calculate how much CO2 a tree has absorbed, we need to convert the weight of the stored carbon back to the equivalent weight of CO2, which is done by multiplying by 3.67.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <p>Webpage developed by AJIN K J | Powered by ThinkerBytes</p>
+  </div>
+
+  <!-- Bootstrap JS and jQuery -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $('#carbonForm').submit(function(event) {
+        event.preventDefault();
+        // Get the circumference input value
+        var circumference = parseFloat($('#circumference').val());
+
+        // Perform calculation
+        var dryWeight = calculateDryWeight(circumference);
+        var carbonStored = dryWeight / 2;
+        var co2Absorbed = carbonStored * 3.67;
+
+        // Display the result
+        $('#carbonStored').text(carbonStored.toFixed(2) + " kg");
+        $('#co2Absorbed').text(co2Absorbed.toFixed(2) + " kg");
+        $('#result').removeClass('d-none');
+      });
+
+      // Function to calculate dry weight based on circumference
+      function calculateDryWeight(circumference) {
+        // Dry weight conversion table
+        var dryWeightTable = [
+  { circumference: 1.5, weight: 0.009 },
+  { circumference: 2.5, weight: 0.04 },
+  { circumference: 5, weight: 0.23 },
+  { circumference: 10, weight: 1.4 },
+  { circumference: 20, weight: 9 },
+  { circumference: 30, weight: 27 },
+  { circumference: 40, weight: 82 },
+  { circumference: 50, weight: 106 },
+  { circumference: 75, weight: 310 },
+  { circumference: 100, weight: 668 },
+  { circumference: 125, weight: 1208 },
+  { circumference: 150, weight: 1964 },
+  { circumference: 175, weight: 3253 },
+  { circumference: 200, weight: 4221 },
+  { circumference: 225, weight: 5771 },
+  { circumference: 250, weight: 7641 },
+  { circumference: 275, weight: 9842 },
+  { circumference: 300, weight: 12410 },
+  { circumference: 325, weight: 15350 },
+  { circumference: 350, weight: 18700 },
+  { circumference: 400, weight: 26674 },
+  // Add new values below this line
+  { circumference: 425, weight: 31419.57 },
+  { circumference: 450, weight: 36661.04 },
+  { circumference: 475, weight: 42441.33 },
+  { circumference: 500, weight: 48785.96 },
+  { circumference: 525, weight: 55720.46 },
+  { circumference: 550, weight: 63270.36 },
+  { circumference: 575, weight: 71461.19 },
+  { circumference: 600, weight: 80318.47 },
+  { circumference: 625, weight: 89867.74 },
+  { circumference: 650, weight: 100134.53 },
+  { circumference: 675, weight: 111144.35 },
+  { circumference: 700, weight: 122922.74 },
+  { circumference: 725, weight: 135495.22 },
+  { circumference: 750, weight: 148887.33 },
+  { circumference: 775, weight: 163124.59 },
+  { circumference: 800, weight: 178232.53 },
+  { circumference: 825, weight: 194236.67 },
+  { circumference: 850, weight: 211162.55 },
+  { circumference: 875, weight: 229035.70 },
+  { circumference: 900, weight: 247881.63 },
+  { circumference: 925, weight: 267725.89 },
+  { circumference: 950, weight: 288593.99 },
+  { circumference: 975, weight: 310511.47 },
+  { circumference: 1000, weight: 333503.85 }
+];
+
+        // Find the closest circumference in the table
+        var closestCircumference = dryWeightTable.reduce(function(prev, curr) {
+          return (Math.abs(curr.circumference - circumference) < Math.abs(prev.circumference - circumference) ? curr : prev);
+        });
+
+        // Return the corresponding dry weight
+        return closestCircumference.weight;
+      }
+    });
+  </script>
+</body>
+</html>
